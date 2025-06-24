@@ -65,7 +65,7 @@
 )
 
 (define-private (validate-sustainability-flag (certified bool))
-  certified
+  (if certified true false)
 )
 
 ;; Get current timestamp (using burn-block-height as alternative to block-height)
@@ -82,7 +82,7 @@
 )
   (let ((batch-id (var-get next-batch-id))
         (current-time (get-current-timestamp))
-        (validated-certified (validate-sustainability-flag sustainability-certified)))
+        (cert-flag (if (is-eq sustainability-certified true) true false)))
     (asserts! (is-eq tx-sender contract-owner) err-owner-only)
     (asserts! (is-valid-string origin-forest) err-empty-string)
     (asserts! (is-valid-volume volume) err-invalid-volume)
@@ -95,7 +95,7 @@
         harvest-timestamp: current-time,
         volume: volume,
         current-owner: tx-sender,
-        sustainability-certified: validated-certified,
+        sustainability-certified: cert-flag,
         current-status: status-harvested,
         location: location
       }
